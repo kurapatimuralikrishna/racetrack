@@ -7,10 +7,11 @@ import com.murali.racetrack.model.RaceTrack;
 import com.murali.racetrack.model.VehicleType;
 
 public class BookingsController {
-	public static boolean book(String[] command, Map<String,RaceTrack> tracks) {
+	public static String book(String[] command, Map<String,RaceTrack> tracks) {
 		String result = bookRegular(command,tracks);
 		if(result.equals("TRACK_NOT_AVAILABLE"))
 			result = bookVip(command,tracks);
+		return result;
 	}
 
 	private static String bookVip(String[] command, Map<String, RaceTrack> tracks) {
