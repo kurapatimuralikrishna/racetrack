@@ -16,32 +16,19 @@ public class Lane {
 			this.entryTime = entryTime;
 			this.exitTime = exitTime;
 		}
-		public String getVehicleNo() {
-			return vehicleNo;
-		}
-		public LocalTime getEntryTime() {
-			return entryTime;
-		}
-		public LocalTime getExitTime() {
-			return exitTime;
-		}
-		public void setVehicleNo(String vehicleNo) {
-			this.vehicleNo = vehicleNo;
-		}
-		public void setEntryTime(LocalTime entryTime) {
-			this.entryTime = entryTime;
-		}
-		public void setExitTime(LocalTime exitTime) {
-			this.exitTime = exitTime;
-		}
 	}
 	public List<Booking> getBookings() {
 		return bookings;
 	}
-	public boolean addBooking(Booking request) {
+	public boolean addBooking(String vehicleNo, LocalTime entryTime, LocalTime exitTime) {
+		Booking request = new Booking(vehicleNo,entryTime,exitTime);
 		for(Booking b:bookings) {
-			b.entryTime.compareTo(request)
+			int entry = b.entryTime.compareTo(request.exitTime);
+			int exit = b.exitTime.compareTo(request.entryTime);
+			if(entry>=0||exit<=0) continue;
+			else return false;
 		}
+		return bookings.add(request);
 	}
 	public double revenue(int costPerHour) {
 		int revenue=0;
@@ -56,5 +43,23 @@ public class Lane {
 			revenue += chargedHours*costPerHour;
 		}
 		return revenue;
+	}
+	public int changeBooking(String[] command) {
+		for(Booking b:bookings) {
+			if(b.vehicleNo.equals(command[1])) {
+				int hours = Integer.parseInt(command[3].split(":")[0]);
+				int minutes = Integer.parseInt(command[3].split(":")[1]);
+				
+				LocalTime newExitTime = LocalTime.of(hours, minutes);
+				if(newExitTime.compareTo(b.exitTime)<0) return 2;
+				for(Booking c:bookings) {
+					int entry = c.entryTime.compareTo(newExitTime);
+					if(entry>=0||c.vehicleNo.equals(b.vehicleNo)) continue;
+					else return 3;
+				}
+				return 1;
+			}
+		}
+		return 0;
 	}
 }

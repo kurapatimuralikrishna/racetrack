@@ -4,45 +4,69 @@ import java.time.LocalTime;
 import java.util.Map;
 
 import com.murali.racetrack.model.RaceTrack;
-import com.murali.racetrack.model.VehicleType;
 
 public class BookingsController {
 	public static String book(String[] command, Map<String,RaceTrack> tracks) {
 		String result = bookRegular(command,tracks);
-		if(result.equals("TRACK_NOT_AVAILABLE"))
+		if(result.equals("TRACK_NOT_AVAILABLE")&&command[1]!="BIKE")
 			result = bookVip(command,tracks);
 		return result;
 	}
 
 	private static String bookVip(String[] command, Map<String, RaceTrack> tracks) {
-		return null;
-	}
-
-	private static String bookRegular(String[] command, Map<String, RaceTrack> tracks) {
-		VehicleType type = VehicleType.valueOf(command[1]);
+		String result;
+		
 		int hours = Integer.parseInt(command[3].split(":")[0]);
 		int minutes = Integer.parseInt(command[3].split(":")[1]);
 		
 		LocalTime entryTime = LocalTime.of(hours, minutes);
 		LocalTime exitTime = LocalTime.of(hours+3, minutes);
 		
-		RaceTrack.Booking request;
+		switch(command[1]) {
+		case "CAR":
+			result = tracks.get("VIP_CAR").addBooking(command[2],entryTime,exitTime);
+			return result;
+		case "SUV":
+			result = tracks.get("VIP_SUV").addBooking(command[2],entryTime,exitTime);
+			return result;
+		default:
+			return null;
+		}
+	}
+
+	private static String bookRegular(String[] command, Map<String, RaceTrack> tracks) {
 		String result;
 		
-		switch(type) {
-		case BIKE:			
-			request = tracks.get("REGULAR_BIKE").new Booking(command[2],entryTime,exitTime);
-			result = tracks.get("REGULAR_BIKE").addBooking(request);
+		int hours = Integer.parseInt(command[3].split(":")[0]);
+		int minutes = Integer.parseInt(command[3].split(":")[1]);
+		
+		LocalTime entryTime = LocalTime.of(hours, minutes);
+		LocalTime exitTime = LocalTime.of(hours+3, minutes);
+		
+		switch(command[1]) {
+		case "BIKE":
+			result = tracks.get("REGULAR_BIKE").addBooking(command[2],entryTime,exitTime);
 			return result;
-		case CAR:
-			request = tracks.get("REGULAR_CAR").new Booking(command[2],entryTime,exitTime);
-			result = tracks.get("REGULAR_CAR").addBooking(request);
+		case "CAR":
+			result = tracks.get("REGULAR_CAR").addBooking(command[2],entryTime,exitTime);
 			return result;
-		case SUV:
-			request = tracks.get("REGULAR_SUV").new Booking(command[2],entryTime,exitTime);
-			result = tracks.get("REGULAR_SUV").addBooking(request);
+		case "SUV":
+			result = tracks.get("REGULAR_SUV").addBooking(command[2],entryTime,exitTime);
 			return result;
+		default:
+			return null;
 		}
-		return null;
+	}
+
+	public static String changeBooking(String[] command, Map<String, RaceTrack> tracks) {
+		
+		String time = command[2];
+		if(time.compareTo("20:00")>0) return "INVALID_EXIT_TIME";
+		for(RaceTrack track:tracks.values()) {
+			if(track.changeBooking(command)==2) return ("INVALID_EXIT_TIME");
+			else if(track.changeBooking(command)==3) return ("RACETRACK_FULL");
+			else if(track.changeBooking(command)==1) return ("SUCCESS");
+		}
+		return "RACETRACK_FULL";
 	}
 }
