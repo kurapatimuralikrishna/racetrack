@@ -1,14 +1,54 @@
 package com.murali.racetrack.model;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RaceTrack {
 	private String trackName;
 	private TrackType trackType;
 	private VehicleType vehicleType;
-	private int capacity;
+	private List<Lane> lanes;
 	private int costPerHour;
+	private List<Booking> bookings;
+	public class Booking{
+		private String vehicleNo;
+		private LocalTime entryTime;
+		private LocalTime exitTime;
+		public Booking(String vehicleNo, LocalTime entryTime, LocalTime exitTime) {
+			super();
+			this.vehicleNo = vehicleNo;
+			this.entryTime = entryTime;
+			this.exitTime = exitTime;
+		}
+		public String getVehicleNo() {
+			return vehicleNo;
+		}
+		public LocalTime getEntryTime() {
+			return entryTime;
+		}
+		public LocalTime getExitTime() {
+			return exitTime;
+		}
+		public void setVehicleNo(String vehicleNo) {
+			this.vehicleNo = vehicleNo;
+		}
+		public void setEntryTime(LocalTime entryTime) {
+			this.entryTime = entryTime;
+		}
+		public void setExitTime(LocalTime exitTime) {
+			this.exitTime = exitTime;
+		}
+	}
+	public RaceTrack(String trackName, TrackType trackType, VehicleType vehicleType, int capacity, int costPerHour) {
+		super();
+		this.trackName = trackName;
+		this.trackType = trackType;
+		this.vehicleType = vehicleType;
+		this.capacity = capacity;
+		this.costPerHour = costPerHour;
+		this.bookings = new ArrayList<>();
+	}
 	public String getTrackName() {
 		return trackName;
 	}
@@ -52,22 +92,19 @@ public class RaceTrack {
 	public void setCostPerHour(int costPerHour) {
 		this.costPerHour = costPerHour;
 	}
-
-	private List<Booking> bookings;
-	class Booking{
-		private String vehicleNo;
-		private LocalTime entryTime;
-		private LocalTime exitTime;
-	}
-	public RaceTrack(String trackName, TrackType trackType, VehicleType vehicleType, int capacity, int costPerHour,
-			List<Booking> bookings) {
-		super();
-		this.trackName = trackName;
-		this.trackType = trackType;
-		this.vehicleType = vehicleType;
-		this.capacity = capacity;
-		this.costPerHour = costPerHour;
-		this.bookings = bookings;
+	
+	public String addBooking(Booking request){
+		if(request.entryTime.isBefore(LocalTime.of(13, 0)) ||
+				request.entryTime.isAfter(LocalTime.of(17, 0)))
+			return ("INVALID_ENTRY_TIME");
+		for(Booking i:bookings) {
+			if((i.entryTime.compareTo(request.exitTime)>=0) || (i.exitTime.compareTo(request.entryTime)<=0)) {
+				continue;
+			}
+			return ("TRACK_NOT_AVAILABLE");
+		}
+		bookings.add(request);
+		return ("SUCCESS");
 	}
 
 	public double revenue() {
