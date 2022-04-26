@@ -1,16 +1,24 @@
 package com.murali.racetrack;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.murali.racetrack.controller.BookingsController;
 import com.murali.racetrack.model.RaceTrack;
 
 public class Main {
 	public static void main(String[] args)  {
 		String result;
+		try {
+			System.setIn(new FileInputStream("./sample_input/input1.txt"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
     	Scanner sc = new Scanner(System.in);
     	List<String[]> commands = new ArrayList<>();
     	
@@ -21,7 +29,7 @@ public class Main {
     	tracks.put("VIP_CAR", new RaceTrack(1,250));
     	tracks.put("VIP_SUV", new RaceTrack(1,300));
     	
-    	while(sc.hasNextLine()) {
+    	while(sc.hasNext()) {
     		String[] command = sc.nextLine().split(" ");
     		commands.add(command);
     	}

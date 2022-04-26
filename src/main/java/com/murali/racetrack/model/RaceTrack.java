@@ -9,6 +9,9 @@ public class RaceTrack {
 	public RaceTrack(int capacity, int costPerHour) {
 		super();
 		this.lanes = new Lane[capacity];
+		for(int i=0;i<lanes.length;i++) {
+			lanes[i] = new Lane();
+		}
 		this.costPerHour = costPerHour;
 	}
 	

@@ -49,7 +49,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <!-- This is the main class of your program which will be executed-->
-                            <mainClass>com.example.geektrust.Main</mainClass>
+                            <mainClass>com.murali.racetrack.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

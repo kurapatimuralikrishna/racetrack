@@ -1,4 +1,4 @@
-package com.murali.racetrack;
+package com.murali.racetrack.controller;
 
 import java.time.LocalTime;
 import java.util.Map;
@@ -8,7 +8,9 @@ import com.murali.racetrack.model.RaceTrack;
 public class BookingsController {
 	public static String book(String[] command, Map<String,RaceTrack> tracks) {
 		String result = bookRegular(command,tracks);
-		if(result.equals("TRACK_NOT_AVAILABLE")&&command[1]!="BIKE")
+		boolean b1 = result.equals("RACETRACK_FULL");
+		boolean b2 = command[1].equals("BIKE");
+		if(b1&&!(b2))
 			result = bookVip(command,tracks);
 		return result;
 	}
@@ -63,9 +65,10 @@ public class BookingsController {
 		String time = command[2];
 		if(time.compareTo("20:00")>0) return "INVALID_EXIT_TIME";
 		for(RaceTrack track:tracks.values()) {
-			if(track.changeBooking(command)==2) return ("INVALID_EXIT_TIME");
-			else if(track.changeBooking(command)==3) return ("RACETRACK_FULL");
-			else if(track.changeBooking(command)==1) return ("SUCCESS");
+			int result = track.changeBooking(command);
+			if(result==2) return ("INVALID_EXIT_TIME");
+			else if(result==3) return ("RACETRACK_FULL");
+			else if(result==1) return ("SUCCESS");
 		}
 		return "RACETRACK_FULL";
 	}
