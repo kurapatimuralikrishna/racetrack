@@ -64,8 +64,8 @@ public class Track {
 		}
 		else return "RACETRACK_FULL";
 	}
-	public double getRevenue() {
-		double revenue = 0;
+	public long getRevenue() {
+		long revenue = 0;
 		for(Booking b:bookings) {
 			revenue+=b.getChargedHours()*cost;
 		}

@@ -34,11 +34,13 @@ public class Booking {
 		Booking extention = new Booking(null, newEntryTime, newExitTime);
 		return extention.clashesWith(b);
 	}
-	public double getChargedHours() {
+	public long getChargedHours() {
 		LocalTime totalTime = exitTime.minus(entryTime.toNanoOfDay(),ChronoUnit.NANOS);
-		double chargedHours = 3;
-		if(totalTime.isAfter(LocalTime.of(3, 15)))
-			chargedHours = totalTime.getHour() + (totalTime.getMinute()*1.0)/60;
+		long chargedHours = 3;
+		if(totalTime.isAfter(LocalTime.of(3, 15))) {
+			chargedHours = totalTime.getHour();
+			if((totalTime.getMinute()%60)>0) chargedHours++;
+		}
 		return chargedHours;
 	}
 }
